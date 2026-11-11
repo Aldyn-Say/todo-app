@@ -1,4 +1,9 @@
-export const TodoList = ({ tasks, toggleTask }) => {
+import { useDispatch } from 'react-redux';
+import { taskToggled } from './features/tasks/tasksSlice';
+
+export const TodoList = ({ tasks }) => {
+    const dispatch = useDispatch();
+
     if (tasks.length === 0) {
         return <p>Задач нет</p>;
     }
@@ -11,7 +16,7 @@ export const TodoList = ({ tasks, toggleTask }) => {
                         <input 
                             type="checkbox" 
                             checked={task.completed} 
-                            onChange={() => toggleTask(task.id)} 
+                            onChange={() => dispatch(taskToggled(task.id))} 
                         />
                         <span>{task.text}</span>
                     </label>

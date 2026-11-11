@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { taskAdded } from './features/tasks/tasksSlice';
 
-export const TodoForm = ({ addTask }) => {
+export const TodoForm = () => {
     const [text, setText] = useState('');
+    const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (text.trim()) {
-            addTask(text);
+            dispatch(taskAdded(text)); // Отправляем экшен в Redux
             setText('');
         }
     };

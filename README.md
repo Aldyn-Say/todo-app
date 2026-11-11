@@ -1,16 +1,17 @@
-# React + Vite
+# Менеджер задач на Redux
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## Как изменилась архитектура после внедрения Redux
+До внедрения Redux состояние задач (массив `tasks`) хранилось локально в компоненте `App` с помощью `useState` и передавалось дочерним компонентам через пропсы (props drilling). 
+После внедрения Redux состояние было вынесено в глобальное хранилище (Store). Компоненты больше не передают данные друг другу через пропсы, а напрямую обращаются к Store: читают данные с помощью хука `useSelector` и изменяют их с помощью `dispatch`. Это упростило компоненты и избавило от необходимости пробрасывать функции-колбэки.
 
-Currently, two official plugins are available:
+## Какие редьюсеры и селекторы созданы
+**Редьюсеры (в `tasksSlice.js`):**
+* `taskAdded` — добавление новой задачи (автоматически генерирует id и дату).
+* `taskToggled` — переключение статуса задачи (выполнено/не выполнено).
+* `taskDeleted` — удаление задачи по id.
+* `completedCleared` — удаление всех выполненных задач.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+**Селекторы (в `tasksSelectors.js`):**
+* `selectAllTasks` — возвращает массив всех задач.
+* `selectActiveTasks` — возвращает массив только активных (невыполненных) задач.
+* `selectCompletedTasks` — возвращает массив только выполненных задач.

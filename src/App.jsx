@@ -1,41 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TodoForm } from './TodoForm';
 import { TodoList } from './TodoList';
 import { TodoStats } from './TodoStats';
+import { selectAllTasks } from './features/tasks/tasksSelectors';
 
 export default function App() {
-    const [tasks, setTasks] = useState(() => {
-        const saved = localStorage.getItem('tasks');
-        return saved ? JSON.parse(saved) : [];
-    });
-
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState('all');
+    
+    // Берем задачи из Redux
+    const tasks = useSelector(selectAllTasks);
 
-    useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
-
-    const addTask = (text) => {
-        const newTask = {
-            id: Date.now().toString(),
-            text: text,
-            completed: false,
-            createdAt: new Date().toLocaleDateString('ru-RU')
-        };
-        setTasks([newTask, ...tasks]);
-    };
-
-    const toggleTask = (id) => {
-        setTasks(tasks.map(task => 
-            task.id === id ? { ...task, completed: !task.completed } : task
-        ));
-    };
-
-    const clearCompleted = () => {
-        setTasks(tasks.filter(task => !task.completed));
-    };
-
+    // Фильтрация остается локальной
     const filteredTasks = tasks.filter(task => {
         const matchesSearch = task.text.toLowerCase().includes(searchQuery.toLowerCase());
         if (filter === 'active') return matchesSearch && !task.completed;
@@ -47,9 +24,9 @@ export default function App() {
         <div className="app-container">
             <h1>Менеджер задач</h1>
             
-            <TodoStats tasks={tasks} clearCompleted={clearCompleted} />
+            <TodoStats />
             
-            <TodoForm addTask={addTask} />
+            <TodoForm />
 
             <div className="controls">
                 <input 
@@ -65,7 +42,7 @@ export default function App() {
                 </select>
             </div>
 
-            <TodoList tasks={filteredTasks} toggleTask={toggleTask} />
+            <TodoList tasks={filteredTasks} />
         </div>
     );
 }
